@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.manage.dao.LoginLogMapper">
+  <resultMap id="BaseResultMap" type="com.manage.entity.LoginLog">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="USERID" jdbcType="BIGINT" property="userid" />
+    <result column="LOGINTIME" jdbcType="VARCHAR" property="logintime" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="IP" jdbcType="VARCHAR" property="ip" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, USERID, LOGINTIME, ADDRESS, IP
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from LOGIN_LOG
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from LOGIN_LOG
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.manage.entity.LoginLog">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into LOGIN_LOG (USERID, LOGINTIME, ADDRESS, 
+      IP)
+    values (#{userid,jdbcType=BIGINT}, #{logintime,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{ip,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.manage.entity.LoginLog">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into LOGIN_LOG
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        USERID,
+      </if>
+      <if test="logintime != null">
+        LOGINTIME,
+      </if>
+      <if test="address != null">
+        ADDRESS,
+      </if>
+      <if test="ip != null">
+        IP,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="logintime != null">
+        #{logintime,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.manage.entity.LoginLog">
+    update LOGIN_LOG
+    <set>
+      <if test="userid != null">
+        USERID = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="logintime != null">
+        LOGINTIME = #{logintime,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        IP = #{ip,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.manage.entity.LoginLog">
+    update LOGIN_LOG
+    set USERID = #{userid,jdbcType=BIGINT},
+      LOGINTIME = #{logintime,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      IP = #{ip,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.manage.dao.UserPermisionMapper">
+  <resultMap id="BaseResultMap" type="com.manage.entity.UserPermision">
+    <id column="PERID" jdbcType="BIGINT" property="perid" />
+    <result column="PERNAME" jdbcType="VARCHAR" property="pername" />
+    <result column="PERLEV" jdbcType="INTEGER" property="perlev" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    PERID, PERNAME, PERLEV
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from USER_PERMISION
+    where PERID = #{perid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from USER_PERMISION
+    where PERID = #{perid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.manage.entity.UserPermision">
+    <selectKey keyProperty="perid" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into USER_PERMISION (PERNAME, PERLEV)
+    values (#{pername,jdbcType=VARCHAR}, #{perlev,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.manage.entity.UserPermision">
+    <selectKey keyProperty="perid" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into USER_PERMISION
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pername != null">
+        PERNAME,
+      </if>
+      <if test="perlev != null">
+        PERLEV,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pername != null">
+        #{pername,jdbcType=VARCHAR},
+      </if>
+      <if test="perlev != null">
+        #{perlev,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.manage.entity.UserPermision">
+    update USER_PERMISION
+    <set>
+      <if test="pername != null">
+        PERNAME = #{pername,jdbcType=VARCHAR},
+      </if>
+      <if test="perlev != null">
+        PERLEV = #{perlev,jdbcType=INTEGER},
+      </if>
+    </set>
+    where PERID = #{perid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.manage.entity.UserPermision">
+    update USER_PERMISION
+    set PERNAME = #{pername,jdbcType=VARCHAR},
+      PERLEV = #{perlev,jdbcType=INTEGER}
+    where PERID = #{perid,jdbcType=BIGINT}
+  </update>
+</mapper>

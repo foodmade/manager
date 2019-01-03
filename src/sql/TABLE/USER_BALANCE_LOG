@@ -1,0 +1,20 @@
+drop table if exists USER_BALANCE_LOG;
+
+/*==============================================================*/
+/* Table: USER_BALANCE_LOG                                      */
+/*==============================================================*/
+create table USER_BALANCE_LOG
+(
+   LOGID                BIGINT not null auto_increment comment '日志id',
+   BALID                BIGINT comment '余额id',
+   AMOUNT               FLOAT comment '金额',
+   TYPE                 INT comment '1：收入、2：支出',
+   OPTIONTYPE           INT comment '1：日工资、2：分红、3：提现',
+   OLDBALANCE           FLOAT comment '更新前余额',
+   primary key (LOGID)
+);
+
+alter table USER_BALANCE_LOG comment '余额调整记录表';
+
+alter table USER_BALANCE_LOG add constraint FK_Reference_11 foreign key (BALID)
+      references USER_BALANCE (BALID) on delete restrict on update restrict;

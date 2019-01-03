@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.manage.dao.DroaMapper">
+  <resultMap id="BaseResultMap" type="com.manage.entity.Droa">
+    <id column="DROAID" jdbcType="BIGINT" property="droaid" />
+    <result column="USERID" jdbcType="BIGINT" property="userid" />
+    <result column="USERNO" jdbcType="VARCHAR" property="userno" />
+    <result column="EXEUSERID" jdbcType="BIGINT" property="exeuserid" />
+    <result column="STATE" jdbcType="INTEGER" property="state" />
+    <result column="EXETIME" jdbcType="DATE" property="exetime" />
+    <result column="APPLYTIME" javaType="java.util.Date" jdbcType="TIMESTAMP" property="applytime" />
+    <result column="DROAAMOUNT" jdbcType="REAL" property="droaamount" />
+    <result column="CROD" jdbcType="VARCHAR" property="crod" />
+    <result column="BALANCE" jdbcType="DOUBLE" property="balance" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    D.*,U.USERNO
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from
+    DROA D LEFT JOIN USERS U ON U.USERID=D.USERID
+    where D.DROAID = #{droaid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from DROA
+    where DROAID = #{droaid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.manage.entity.Droa">
+    <selectKey keyProperty="droaid" order="AFTER" resultType="java.lang.Long">
+    SELECT LAST_INSERT_ID()
+  </selectKey>
+    insert into DROA (DROAID,USERID,EXEUSERID, STATE,
+      EXETIME, APPLYTIME, DROAAMOUNT, 
+      CROD,BALANCE)
+    values (#{droaid,jdbcType=BIGINT},#{userid,jdbcType=BIGINT}, #{exeuserid,jdbcType=BIGINT}, #{state,jdbcType=INTEGER},
+      #{exetime,jdbcType=DATE}, #{applytime,jdbcType=TIMESTAMP}, #{droaamount,jdbcType=REAL},
+      #{crod,jdbcType=VARCHAR},#{balance,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.manage.entity.Droa">
+    <selectKey keyProperty="userid" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into DROA
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="droaid != null">
+        DROAID,
+      </if>
+      <if test="exeuserid != null">
+        EXEUSERID,
+      </if>
+      <if test="state != null">
+        STATE,
+      </if>
+      <if test="exetime != null">
+        EXETIME,
+      </if>
+      <if test="applytime != null">
+        APPLYTIME,
+      </if>
+      <if test="droaamount != null">
+        DROAAMOUNT,
+      </if>
+      <if test="crod != null">
+        CROD,
+      </if>
+      <if test="balance != null">
+        BALANCE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="droaid != null">
+        #{droaid,jdbcType=BIGINT},
+      </if>
+      <if test="exeuserid != null">
+        #{exeuserid,jdbcType=BIGINT},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="exetime != null">
+        #{exetime,jdbcType=DATE},
+      </if>
+      <if test="applytime != null">
+        #{applytime,jdbcType=DATE},
+      </if>
+      <if test="droaamount != null">
+        #{droaamount,jdbcType=REAL},
+      </if>
+      <if test="crod != null">
+        #{crod,jdbcType=VARCHAR},
+      </if>
+      <if test="balance != null">
+        #{balance,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.manage.entity.Droa">
+    update DROA
+    <set>
+      <if test="userid != null">
+        USERID = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="exeuserid != null">
+        EXEUSERID = #{exeuserid,jdbcType=BIGINT},
+      </if>
+      <if test="state != null">
+        STATE = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="exetime != null">
+        EXETIME = #{exetime,jdbcType=DATE},
+      </if>
+      <if test="applytime != null">
+        APPLYTIME = #{applytime,jdbcType=DATE},
+      </if>
+      <if test="droaamount != null">
+        DROAAMOUNT = #{droaamount,jdbcType=REAL},
+      </if>
+      <if test="crod != null">
+        CROD = #{crod,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where DROAID = #{droaid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.manage.entity.Droa">
+    update DROA
+    set USERID = #{userid,jdbcType=BIGINT},
+      EXEUSERID = #{exeuserid,jdbcType=BIGINT},
+      STATE = #{state,jdbcType=INTEGER},
+      EXETIME = #{exetime,jdbcType=DATE},
+      APPLYTIME = #{applytime,jdbcType=DATE},
+      DROAAMOUNT = #{droaamount,jdbcType=REAL},
+      CROD = #{crod,jdbcType=VARCHAR}
+    where DROAID = #{droaid,jdbcType=BIGINT}
+  </update>
+
+  <select id="qryDroaList"  resultMap="BaseResultMap" parameterType="com.manage.vo.DroaScope">
+    select
+    <include refid="Base_Column_List" />
+    from
+    DROA D LEFT JOIN USERS U ON U.USERID=D.USERID
+    where 1=1
+    <if test="userid != null">
+      AND  D.USERID = #{userid,jdbcType=INTEGER}
+    </if>
+    <if test="applytime != null">
+      AND   D.APPLYTIME  <![CDATA[ <= ]]> #{applytime,jdbcType=DATE}
+    </if>
+    <if test="bebinDate != null">
+      AND   D.APPLYTIME  <![CDATA[ >= ]]> #{bebinDate,jdbcType=DATE}
+    </if>
+    <if test="endDate != null">
+      AND   D.APPLYTIME  <![CDATA[ <= ]]> #{endDate,jdbcType=DATE}
+    </if>
+    <if test="state != null">
+      AND  D.STATE = #{state,jdbcType=INTEGER}
+    </if>
+    <if test="minDroaAmount != null">
+      AND  D.DROAAMOUNT <![CDATA[ >= ]]> #{minDroaAmount,jdbcType=FLOAT}
+    </if>
+    <if test="maxDroaAmount != null">
+      AND  D.DROAAMOUNT  <![CDATA[ <= ]]>  #{maxDroaAmount,jdbcType=FLOAT}
+    </if>
+    order by D.STATE,D.APPLYTIME
+    <if test="page != null">
+      limit #{page.begin},#{page.pageSize}
+    </if>
+  </select>
+
+  <select id="qryDroaListCount"  resultType="java.lang.Integer" parameterType="com.manage.vo.DroaScope">
+    select count(1)
+    from DROA
+    where 1=1
+    <if test="userid != null">
+      AND  USERID = #{userid,jdbcType=INTEGER}
+    </if>
+    <if test="applytime != null">
+      AND   APPLYTIME  <![CDATA[ <= ]]> #{applytime,jdbcType=DATE}
+    </if>
+    <if test="bebinDate != null">
+      AND   APPLYTIME  <![CDATA[ >= ]]> #{bebinDate,jdbcType=DATE}
+    </if>
+    <if test="endDate != null">
+      AND   APPLYTIME  <![CDATA[ <= ]]> #{endDate,jdbcType=DATE}
+    </if>
+    <if test="state != null">
+      AND  STATE = #{state,jdbcType=INTEGER}
+    </if>
+    <if test="minDroaAmount != null">
+      AND  DROAAMOUNT <![CDATA[ >= ]]> #{minDroaAmount,jdbcType=FLOAT}
+    </if>
+    <if test="maxDroaAmount != null">
+      AND  DROAAMOUNT  <![CDATA[ <= ]]>  #{maxDroaAmount,jdbcType=FLOAT}
+    </if>
+  </select>
+
+  <select id="selectByUserIdAmount" parameterType="java.lang.Long" resultType="java.lang.Double">
+    select SUM(DROAAMOUNT) from DROA where USERID = #{userid} and STATE = 1;
+  </select>
+
+  <select id="qryToPayAmount" parameterType="com.manage.vo.DroaScope" resultType="java.lang.Double">
+      select SUM(DROAAMOUNT) from DROA where 1=1 and STATE = 1
+      <if test="userid != null">
+        AND  USERID = #{userid,jdbcType=INTEGER}
+      </if>
+  </select>
+</mapper>

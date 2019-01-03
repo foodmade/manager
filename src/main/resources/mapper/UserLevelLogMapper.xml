@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.manage.dao.UserLevelLogMapper">
+  <resultMap id="BaseResultMap" type="com.manage.entity.UserLevelLog">
+    <id column="LOGID" jdbcType="BIGINT" property="logid" />
+    <result column="USERID" jdbcType="BIGINT" property="userid" />
+    <result column="LEVELID" jdbcType="BIGINT" property="levelid" />
+    <result column="TIME" jdbcType="DATE" property="time" />
+    <result column="REASON" jdbcType="VARCHAR" property="reason" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    LOGID, USERID, LEVELID, TIME, REASON
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from USER_LEVEL_LOG
+    where LOGID = #{logid,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectUserLevelLog" parameterType="com.manage.entity.UserLevelLog" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from USER_LEVEL_LOG
+    where 1=1
+    <if test="userid != null">
+    and  USERID = #{userid,jdbcType=BIGINT}
+    </if>
+    <if test="levelid != null">
+    and  LEVELID = #{levelid,jdbcType=BIGINT}
+    </if>
+  </select>
+
+  <select id="selectUserLevelInfo" parameterType="com.manage.entity.UserLevelLog" resultType="com.manage.vo.UserLevelLogView">
+    SELECT LOG.TIME,LOG.REASON,US.USERNAME,LE.LEVELNAME,LE.DAYNUM,LE.AMOUNT,US.USERID
+    FROM USER_LEVEL_LOG LOG
+    LEFT JOIN USER_LEVEL LE ON LE.LEVELID=LOG.LEVELID
+    LEFT JOIN USERS US ON US.USERID = LOG.USERID
+    where 1=1
+    <if test="userid != null">
+      and  US.USERID = #{userid,jdbcType=BIGINT}
+    </if>
+    <if test="time != null">
+      and  US.TIME >= #{time,jdbcType=DATE}
+    </if>
+    ORDER BY LOG.LOGID DESC
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from USER_LEVEL_LOG
+    where LOGID = #{logid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.manage.entity.UserLevelLog">
+    <selectKey keyProperty="logid" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into USER_LEVEL_LOG (USERID, LEVELID, TIME, 
+      REASON)
+    values (#{userid,jdbcType=BIGINT}, #{levelid,jdbcType=BIGINT}, #{time,jdbcType=DATE}, 
+      #{reason,jdbcType=VARCHAR})
+  </insert>
+
+
+  <insert id ="insertBatch" parameterType="java.util.List" >
+    <selectKey resultType ="java.lang.Long" keyProperty= "logid"
+               order= "AFTER">
+      SELECT LAST_INSERT_ID()
+    </selectKey >
+    insert into USER_LEVEL_LOG (USERID, LEVELID, TIME,
+    REASON)
+    values
+    <foreach collection ="list" item="item" index= "index" separator =",">
+      (#{item.userid,jdbcType=BIGINT}, #{item.levelid,jdbcType=BIGINT}, #{item.time,jdbcType=DATE},
+      #{item.reason,jdbcType=VARCHAR})
+    </foreach >
+  </insert >
+
+
+  <insert id="insertSelective" parameterType="com.manage.entity.UserLevelLog">
+    <selectKey keyProperty="logid" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into USER_LEVEL_LOG
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        USERID,
+      </if>
+      <if test="levelid != null">
+        LEVELID,
+      </if>
+      <if test="time != null">
+        TIME,
+      </if>
+      <if test="reason != null">
+        REASON,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="levelid != null">
+        #{levelid,jdbcType=BIGINT},
+      </if>
+      <if test="time != null">
+        #{time,jdbcType=DATE},
+      </if>
+      <if test="reason != null">
+        #{reason,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.manage.entity.UserLevelLog">
+    update USER_LEVEL_LOG
+    <set>
+      <if test="userid != null">
+        USERID = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="levelid != null">
+        LEVELID = #{levelid,jdbcType=BIGINT},
+      </if>
+      <if test="time != null">
+        TIME = #{time,jdbcType=DATE},
+      </if>
+      <if test="reason != null">
+        REASON = #{reason,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where LOGID = #{logid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.manage.entity.UserLevelLog">
+    update USER_LEVEL_LOG
+    set USERID = #{userid,jdbcType=BIGINT},
+      LEVELID = #{levelid,jdbcType=BIGINT},
+      TIME = #{time,jdbcType=DATE},
+      REASON = #{reason,jdbcType=VARCHAR}
+    where LOGID = #{logid,jdbcType=BIGINT}
+  </update>
+  <select id="selectUserLevelByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM USER_LEVEL_LOG
+    WHERE USERID = #{userid,jdbcType=BIGINT}
+  </select>
+</mapper>

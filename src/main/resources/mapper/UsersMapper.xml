@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.manage.dao.UsersMapper">
+  <resultMap id="BaseResultMap" type="com.manage.entity.Users">
+    <id column="USERID" jdbcType="BIGINT" property="userid" />
+    <result column="PID" jdbcType="BIGINT" property="pid" />
+    <result column="PERID" jdbcType="BIGINT" property="perid" />
+    <result column="LEVELID" jdbcType="BIGINT" property="levelid" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="USERNO" jdbcType="VARCHAR" property="userno" />
+    <result column="PAYPWD" jdbcType="VARCHAR" property="paypwd" />
+    <result column="PWD" jdbcType="VARCHAR" property="pwd" />
+    <result column="IDCORD" jdbcType="VARCHAR" property="idcord" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="REGISTTIME" jdbcType="DATE" property="registtime" />
+    <result column="ISOLDUSER" jdbcType="INTEGER" property="isolduser" />
+    <result column="TLENO" jdbcType="VARCHAR" property="tleno" />
+    <result column="STATE" jdbcType="INTEGER" property="state" />
+    <result column="HEADICONURL" jdbcType="VARCHAR" property="headiconurl" />
+    <result column="AREA" jdbcType="INTEGER" property="area" />
+    <result column="TOPPID" jdbcType="VARCHAR" property="toppid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    USERID, PID, PERID, LEVELID, USERNAME, USERNO, PAYPWD, PWD, IDCORD, ADDRESS, REGISTTIME, 
+    ISOLDUSER, TLENO, STATE, HEADICONURL, AREA, TOPPID
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from USERS
+    where USERID = #{userid,jdbcType=BIGINT}
+  </select>
+
+  <select id="qryUserList" parameterType="com.manage.vo.UserScope" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from USERS
+    where 1=1
+    <if test="userLevls != null">
+      and levelid in
+      <foreach collection="userLevls" item="userLevl"
+               index="index" open="(" close=")" separator=",">
+        #{userLevl}
+      </foreach>
+    </if>
+    <if test="beginDate != null">
+      and REGISTTIME >=#{beginDate,jdbcType=DATE}
+    </if>
+    <if test="isolduser != null">
+      and ISOLDUSER =#{isolduser,jdbcType=INTEGER}
+    </if>
+    <if test="state != null">
+      and STATE =#{state,jdbcType=INTEGER}
+    </if>
+    <if test="endDate != null">
+      and REGISTTIME &lt; #{endDate,jdbcType=DATE}
+    </if>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from USERS
+    where USERID = #{userid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.manage.entity.Users">
+    <selectKey keyProperty="userid" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into USERS (PID, PERID, LEVELID, 
+      USERNAME, USERNO, PAYPWD, 
+      PWD, IDCORD, ADDRESS, 
+      REGISTTIME, ISOLDUSER, TLENO, 
+      STATE, HEADICONURL, AREA, 
+      TOPPID)
+    values (#{pid,jdbcType=BIGINT}, #{perid,jdbcType=BIGINT}, #{levelid,jdbcType=BIGINT}, 
+      #{username,jdbcType=VARCHAR}, #{userno,jdbcType=VARCHAR}, #{paypwd,jdbcType=VARCHAR}, 
+      #{pwd,jdbcType=VARCHAR}, #{idcord,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{registtime,jdbcType=DATE}, #{isolduser,jdbcType=INTEGER}, #{tleno,jdbcType=VARCHAR},
+      #{state,jdbcType=INTEGER}, #{headiconurl,jdbcType=VARCHAR}, #{area,jdbcType=INTEGER}, 
+      #{toppid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.manage.entity.Users">
+    <selectKey keyProperty="userid" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into USERS
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pid != null">
+        PID,
+      </if>
+      <if test="perid != null">
+        PERID,
+      </if>
+      <if test="levelid != null">
+        LEVELID,
+      </if>
+      <if test="username != null">
+        USERNAME,
+      </if>
+      <if test="userno != null">
+        USERNO,
+      </if>
+      <if test="paypwd != null">
+        PAYPWD,
+      </if>
+      <if test="pwd != null">
+        PWD,
+      </if>
+      <if test="idcord != null">
+        IDCORD,
+      </if>
+      <if test="address != null">
+        ADDRESS,
+      </if>
+      <if test="registtime != null">
+        REGISTTIME,
+      </if>
+      <if test="isolduser != null">
+        ISOLDUSER,
+      </if>
+      <if test="tleno != null">
+        TLENO,
+      </if>
+      <if test="state != null">
+        STATE,
+      </if>
+      <if test="headiconurl != null">
+        HEADICONURL,
+      </if>
+      <if test="area != null">
+        AREA,
+      </if>
+      <if test="toppid != null">
+        TOPPID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pid != null">
+        #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="perid != null">
+        #{perid,jdbcType=BIGINT},
+      </if>
+      <if test="levelid != null">
+        #{levelid,jdbcType=BIGINT},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="userno != null">
+        #{userno,jdbcType=VARCHAR},
+      </if>
+      <if test="paypwd != null">
+        #{paypwd,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null">
+        #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="idcord != null">
+        #{idcord,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="registtime != null">
+        #{registtime,jdbcType=DATE},
+      </if>
+      <if test="isolduser != null">
+        #{isolduser,jdbcType=INTEGER},
+      </if>
+      <if test="tleno != null">
+        #{tleno,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="headiconurl != null">
+        #{headiconurl,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=INTEGER},
+      </if>
+      <if test="toppid != null">
+        #{toppid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.manage.entity.Users">
+    update USERS
+    <set>
+      <if test="pid != null">
+        PID = #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="perid != null">
+        PERID = #{perid,jdbcType=BIGINT},
+      </if>
+      <if test="levelid != null">
+        LEVELID = #{levelid,jdbcType=BIGINT},
+      </if>
+      <if test="username != null">
+        USERNAME = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="userno != null">
+        USERNO = #{userno,jdbcType=VARCHAR},
+      </if>
+      <if test="paypwd != null">
+        PAYPWD = #{paypwd,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null">
+        PWD = #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="idcord != null">
+        IDCORD = #{idcord,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="registtime != null">
+        REGISTTIME = #{registtime,jdbcType=DATE},
+      </if>
+      <if test="isolduser != null">
+        ISOLDUSER = #{isolduser,jdbcType=INTEGER},
+      </if>
+      <if test="tleno != null">
+        TLENO = #{tleno,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        STATE = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="headiconurl != null">
+        HEADICONURL = #{headiconurl,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        AREA = #{area,jdbcType=INTEGER},
+      </if>
+      <if test="toppid != null">
+        TOPPID = #{toppid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where USERID = #{userid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.manage.entity.Users">
+    update USERS
+    set PID = #{pid,jdbcType=BIGINT},
+      PERID = #{perid,jdbcType=BIGINT},
+      LEVELID = #{levelid,jdbcType=BIGINT},
+      USERNAME = #{username,jdbcType=VARCHAR},
+      USERNO = #{userno,jdbcType=VARCHAR},
+      PAYPWD = #{paypwd,jdbcType=VARCHAR},
+      PWD = #{pwd,jdbcType=VARCHAR},
+      IDCORD = #{idcord,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      REGISTTIME = #{registtime,jdbcType=DATE},
+      ISOLDUSER = #{isolduser,jdbcType=INTEGER},
+      TLENO = #{tleno,jdbcType=VARCHAR},
+      STATE = #{state,jdbcType=INTEGER},
+      HEADICONURL = #{headiconurl,jdbcType=VARCHAR},
+      AREA = #{area,jdbcType=INTEGER},
+      TOPPID = #{toppid,jdbcType=VARCHAR}
+    where USERID = #{userid,jdbcType=BIGINT}
+  </update>
+
+    <sql id="common_where_if">
+        <if test="userno != null and userno != ''">
+            and USERNO = #{userno,jdbcType=VARCHAR}
+        </if>
+        <if test="tleno != null and tleno != ''">
+            and TLENO =#{tleno,jdbcType=VARCHAR}
+        </if>
+        <if test="username != null and username != ''">
+            and USERNAME =#{username,jdbcType=VARCHAR}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and REGISTTIME <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and REGISTTIME <![CDATA[ <= ]]> #{endTime}
+        </if>
+      <if test="levelid != null and levelid != ''">
+        and levelid = #{levelid}
+      </if>
+      <if test="pid != null and pid != ''">
+        and pid = #{pid}
+      </if>
+        <if test="toppid != null and toppid != ''">
+            <bind name="toppidLike" value="toppid+'%'"/>
+            and TOPPID LIKE #{toppidLike}
+        </if>
+        <if test="state != null and state != ''">
+          and STATE = #{state,jdbcType=INTEGER}
+        </if>
+
+    </sql>
+
+  <select id="selectByUserNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from USERS
+    where USERNO = #{userno,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from USERS
+    where userid = #{userId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByPid" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from USERS
+    where PID = #{pid,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByTopId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM USERS
+    WHERE TOPPID = #{userId,jdbcType=VARCHAR}
+  </select>
+
+  <insert id ="insertBatch" parameterType="java.util.List" >
+    <selectKey resultType ="java.lang.Long" keyProperty= "userid"
+               order= "AFTER">
+                    SELECT LAST_INSERT_ID()
+    </selectKey >
+             insert into USERS (PID, PERID, LEVELID,
+              USERNAME, USERNO, PAYPWD,
+              PWD, IDCORD, ADDRESS,
+              REGISTTIME, ISOLDUSER, TLENO,
+              STATE, HEADICONURL, AREA,
+              TOPPID)
+             values
+             <foreach collection ="list" item="item" index= "index" separator =",">
+                  (#{item.pid,jdbcType=BIGINT}, #{item.perid,jdbcType=BIGINT}, #{item.levelid,jdbcType=BIGINT},
+               #{item.username,jdbcType=VARCHAR}, #{item.userno,jdbcType=VARCHAR}, #{item.paypwd,jdbcType=VARCHAR},
+               #{item.pwd,jdbcType=VARCHAR}, #{item.idcord,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR},
+               #{item.registtime,jdbcType=DATE}, #{item.isolduser,jdbcType=INTEGER}, #{item.tleno,jdbcType=VARCHAR},
+               #{item.state,jdbcType=INTEGER}, #{item.headiconurl,jdbcType=VARCHAR}, #{item.area,jdbcType=INTEGER},
+               #{item.toppid,jdbcType=VARCHAR})
+             </foreach >
+  </insert >
+
+      <select id="selectSearchQuery" parameterType="com.manage.vo.QueryUserListRequest" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM USERS
+        WHERE 1=1
+         <include refid="common_where_if"/>
+          order by REGISTTIME desc
+        limit #{page},#{pageSize}
+      </select>
+
+    <select id="selectSearchQueryCnt" parameterType="com.manage.vo.QueryUserListRequest" resultType="java.lang.Integer">
+        SELECT
+        COUNT(*)
+        FROM USERS
+        WHERE 1=1
+        <include refid="common_where_if"/>
+    </select>
+
+  <select id="selectByPrimaryFilter" parameterType="com.manage.entity.Users" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    FROM USERS
+    WHERE 1=1
+    <include refid="common_where_if"/>
+
+  </select>
+
+  <select id="getMenuTreeByUser" parameterType="java.lang.Long" resultType="com.manage.entity.MenuTree">
+      SELECT ME.MENUTREE AS "menuTree",ME.MENUNAME AS "menuName",ME.PID AS "pid",ME.MENUID AS "menuId",
+      ME.URL AS "url",ME.ICON AS "icon"
+      FROM MENUTREE ME
+      LEFT JOIN PERMISION_MENU_RELATION R ON R.MENUID=ME.MENUID
+      LEFT JOIN USER_PERMISION P ON P.PERID=R.PERID
+      LEFT JOIN USERS U ON U.PERID=R.PERID
+      WHERE U.USERID=#{userId,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByTopPid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT * FROM USERS WHERE TOPPID = #{topPid.jdbcType=VARCHAR}
+  </select>
+
+  <!--获取所有子节点-->
+  <select id="selectAllChildNodeUser" parameterType="com.manage.vo.in.UserInRequest" resultMap="BaseResultMap">
+    SELECT * FROM USERS WHERE 1=1
+    <if test="toppid != null and toppid != ''">
+      <bind name="toppidLike" value="toppid+'%'"/>
+      and TOPPID LIKE #{toppidLike}
+    </if>
+    <if test="startTime != null and startTime != ''">
+        and REGISTTIME <![CDATA[ >= ]]> #{startTime}
+    </if>
+    <if test="endTime != null and endTime != ''">
+         and REGISTTIME <![CDATA[ <= ]]> #{endTime}
+    </if>
+    <if test="userid != null and userid != ''">
+      AND USERID != #{userid}
+    </if>
+  </select>
+
+  <select id="selectUserListByUserIds" parameterType="java.util.List" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM USERS WHERE 1=1 AND
+    USERID IN
+    <foreach collection="list" item="userid" open="(" close=")" separator="," index="index">
+      #{userid}
+    </foreach>
+  </select>
+
+  <select id="selectAllUser" resultMap="BaseResultMap">
+    SELECT * FROM USERS WHERE STATE != 2
+  </select>
+</mapper>
